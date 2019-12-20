@@ -1,0 +1,24 @@
+Q1: What is the purpose of using sessions
+A1: A session is used in the communication between a server and a client. A session allows the client to avoid sending his authentication credentials (username & password) every time the client makes a request to the server.  The client only needs to send its authentication credentials once on login. 
+The way this works is as follows:
+1) A session is created on the server (in memory or a database) after a client logs in to the server by sending its authentication credentials to the server. The session has a session ID.
+2) When the session is created the server sends the client a cookie that is encrypted. This cookie has information that includes the session ID to identify the client. 
+3) Now on any subsequent request from the client to server the cookie is sent to the server. The server then decrypts the cookie and checks the session ID to identify the client and then allow the client to access to resources depending on what resources the client is allowed to access. If the session has an invalid or expired session ID, the client is not allowed access to resources.
+4) After the client is done working with the server, the client sends a logout request to the server which causes the server to delete the session, and thus end it.
+
+
+Q2: What does bcrypt do to help us store passwords in a secure manner.
+A1: Bcrypt hashes the password. That is, it uses a mathematical formula to transform the unique password into a unique value. This formula has the property that it is easy for a computer to transform a unique password to a unique value, but that it is very difficult (in terms of time taken to do so) for a computer to transform the unique value back to the given password.  Thus if some hacker get access to the server database that stores the hashed password, he will not know what the real password is.
+Note that the unique hashed value is represented as a string of characters.
+
+
+Q3: What does bcrypt do to slow down attackers?
+A3: The bcrypt hashing function takes a second parameter that controls the number of times that the hashing mathematical formula is applied. So what happens is that the password gets hashed once and the result of that operation gets hashed again and then the result of that operation gets hashed again and so on. The second parameter controls the number of these repeated hashings and so slows down the overall hashing process. 
+For attackers to defeat the hashing process, they have to build a table of all possible passwords and their resultant hashes. Then with a given hashed password that they stole from a database they can do a search of their table to find the hashed value and the corresponding password. However if all possible passwords is a large number and we have slowed down the hashing process with a larger 2nd parameter, then it will take them a long time for them to build their table and we have slowed down the attackers.
+
+
+Q4: What are the three parts of the JSON Web Token
+A4: The 3 parts of a JSON Web Token are:
+1) header
+2) payload
+3) signature
